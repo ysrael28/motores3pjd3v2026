@@ -1,21 +1,17 @@
 using UnityEngine;
-using System.Collections; // Necessário para o IEnumerator
+using System.Collections;
 
-public class SplashScreen : MonoBehaviour
+public class SplashTimer : MonoBehaviour
 {
-    private IEnumerator Start()
+    void Start()
     {
-        // Espera 2 segundos
-        yield return new WaitForSeconds(2f);
+       
+        Invoke("IrParaMenu", 2f);
+    }
 
-        // Verifica se o GameManager existe antes de chamar para evitar erros
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.LoadSceneWithState("MenuPrincipal", GameManager.GameState.MenuPrincipal);
-        }
-        else
-        {
-            Debug.LogError("GameManager não encontrado! Certifique-se de começar pela cena _Boot.");
-        }
+    void IrParaMenu()
+    {
+       
+        GameManager.Instance.MudarCena("MenuPrincipal");
     }
 }
