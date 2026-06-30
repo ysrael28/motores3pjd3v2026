@@ -4,7 +4,7 @@ public class MenuController : MonoBehaviour
 {
     public void IniciarJogo()
     {
-        
-        GameManager.Instance.MudarCena("GetStarted_Scene");
+      
+        GameManager.Instance.LoadSceneWithState("GetStarted_Scene", GameManager.GameState.Gameplay);
     }
 }

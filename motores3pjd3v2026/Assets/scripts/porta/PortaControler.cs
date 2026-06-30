@@ -9,8 +9,7 @@ public class PortaControler : MonoBehaviour
 
    private void Start()
    {
-      portaAnim = GetComponentInChildren<Animator>();
-      
+      var portaAnim = GetComponentInChildren<Animator>();
    }
 
    private void OnTriggerEnter(Collider other)
@@ -22,5 +21,10 @@ public class PortaControler : MonoBehaviour
       }
       
       
+   }
+
+   private void AbreFechaPorta()
+   {
+      throw new NotImplementedException();
    }
 }
