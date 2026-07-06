@@ -2570,7 +2570,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 87.867
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -2595,6 +2596,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4948f0dc56132274184c4c7894dd849a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Coin
+  rotationSpeed: 100
 --- !u!1001 &1616555664
 PrefabInstance:
   m_ObjectHideFlags: 0

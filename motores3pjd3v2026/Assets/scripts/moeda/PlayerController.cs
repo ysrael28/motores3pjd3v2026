@@ -1,15 +1,18 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class Player : MonoBehaviour
 {
-    private int coinCount = 0;
+    public static int coins = 0;
 
-    public void AddCoin()
+    private void OnTriggerEnter(Collider other)
     {
-        coinCount++;
-        Debug.Log($"<color=yellow>[Player]</color> Coletei uma moeda! Total: {coinCount}. Avisando o Observer Manager...");
-        
-        // Notifica o gerenciador de eventos
-        PlayerObserverManager.TriggerCoinCollected(coinCount);
+        if (other.CompareTag("Coin"))
+        {
+            coins++;
+
+            PlayerObserverManager.NotifyCoinCollected(coins);
+
+            Destroy(other.gameObject);
+        }
     }
 }

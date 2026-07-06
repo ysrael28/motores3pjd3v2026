@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5980922941077176885}
   - component: {fileID: 2048147914609326597}
   - component: {fileID: 1613606815877768266}
-  - component: {fileID: -3843853940644889518}
   - component: {fileID: 8414298079554774474}
   m_Layer: 0
   m_Name: coin
@@ -92,18 +91,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-3843853940644889518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5267735254107577784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4948f0dc56132274184c4c7894dd849a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Coin
 --- !u!136 &8414298079554774474
 CapsuleCollider:
   m_ObjectHideFlags: 0

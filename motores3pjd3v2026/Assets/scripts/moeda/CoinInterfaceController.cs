@@ -1,32 +1,31 @@
 using UnityEngine;
 using TMPro;
+using System;
 
-public class CoinInterfaceController : MonoBehaviour
+public class CoinUI : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI coinText;
-
-    private void Start()
-    {
-        if (coinText != null) coinText.text = "Moedas: 0";
-    }
+    [SerializeField] private TMP_Text coinsText;
 
     private void OnEnable()
     {
-        PlayerObserverManager.OnCoinCollected += UpdateCoinDisplay;
-        Debug.Log("<color=green>[Interface]</color> Conectada ao Observer e esperando moedas...");
+        PlayerObserverManager.OnCoinCollected += UpdateCoins;
     }
 
     private void OnDisable()
     {
-        PlayerObserverManager.OnCoinCollected -= UpdateCoinDisplay;
+        PlayerObserverManager.OnCoinCollected -= UpdateCoins;
     }
 
-    private void UpdateCoinDisplay(int currentCoins)
+    private void UpdateCoins(int totalCoins)
     {
-        Debug.Log($"<color=green>[Interface]</color> Mensagem recebida! Atualizando texto para: {currentCoins}");
-        if (coinText != null)
+        if (coinsText == null)
         {
-            coinText.text = $"Moedas: {currentCoins}";
+            return;
+        } 
+        else 
+        {
+            coinsText.text = "Moedas: " + coins.toString();
         }
+      
     }
 }
