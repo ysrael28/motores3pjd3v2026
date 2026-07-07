@@ -21,11 +21,11 @@ public class CoinUI : MonoBehaviour
         if (coinsText == null)
         {
             return;
-        } 
-        else 
-        {
-            coinsText.text = "Moedas: " + coins.toString();
         }
-      
+        else
+        {
+           
+            coinsText.text = "Moedas: " + totalCoins.ToString();
+        }
     }
 }
