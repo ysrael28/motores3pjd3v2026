@@ -1,20 +1,23 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using StarterAssets;
 
 public class RobotMovement : MonoBehaviour
 {
-    private Vector2 moveInput;
+    private StarterAssetsInputs starterInputs;
 
-    // Método disparado pelo evento OnMove do PlayerInput
-    public void OnMove(InputAction.CallbackContext context)
+    private void Awake()
     {
-        moveInput = context.ReadValue<Vector2>();
+        // Pega o componente StarterAssetsInputs na raiz
+        starterInputs = GetComponent<StarterAssetsInputs>();
     }
 
-    private void FixedUpdate()
+    public void OnMove(InputAction.CallbackContext context)
     {
-        // Aplica o movimento usando o Vector2 recebido
-        Vector3 direction = new Vector3(moveInput.x, 0f, moveInput.y);
-        // Exemplo: rb.MovePosition(rb.position + direction * speed * Time.fixedDeltaTime);
+        if (starterInputs != null)
+        {
+            // Repassa o movimento para o Starter Assets
+            starterInputs.MoveInput(context.ReadValue<Vector2>());
+        }
     }
 }

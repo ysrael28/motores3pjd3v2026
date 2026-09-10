@@ -1,26 +1,33 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
-using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
-  
     public static GameManager Instance { get; private set; }
 
-   
-    public enum GameState { Iniciando, MenuPrincipal, Gameplay }
-    private GameState currentState;
+    public enum GameState
+    {
+        MenuPrincipal,
+        Gameplay,
+        GameOver
+    }
 
-    [Header("Configurações")]
-    [SerializeField] private string splashSceneName = "Splash";
-    [SerializeField] private string mainMenuSceneName = "MenuPrincipal";
-    [SerializeField] private string gameplaySceneName = "GetStarted_Scene";
-    [SerializeField] private string guiSceneName = "GUI"; 
+    [Header("Configuração Inicial (Boot)")]
+    [SerializeField] private string primeiraCena = "Splash";
+    [SerializeField] private float tempoEsperaBoot = 0.5f;
+
+    [Header("Pontuação")]
+    public int p1Score = 0;
+    public int p2Score = 0;
+    public int totalMoedasNaCena = 10;
+    public int moedasColetadasTotal = 0;
+
+    private UIManager uiManager;
 
     private void Awake()
     {
-      
         if (Instance == null)
         {
             Instance = this;
@@ -31,101 +38,139 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        ChangeState(GameState.Iniciando);
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
-     
+        // Se estivermos na cena _Boot ao dar Play, faz o redirecionamento automático
         if (SceneManager.GetActiveScene().name == "_Boot")
         {
-            LoadSceneWithState(splashSceneName, GameState.Iniciando);
+            if (tempoEsperaBoot > 0)
+            {
+                yield return new WaitForSeconds(tempoEsperaBoot);
+            }
+
+            RequestSceneChange(primeiraCena);
         }
     }
 
-
-    public void ChangeState(GameState newState)
+    // -------------------------------------------------------------
+    // REGISTRO DA INTERFACE DA CENA GUI
+    // -------------------------------------------------------------
+    public void RegistrarUI(UIManager ui)
     {
-        currentState = newState;
-        Debug.Log($"<color=cyan>[GameManager]</color> Estado alterado para: {currentState}");
-
-        switch (currentState)
-        {
-            case GameState.Iniciando:
-                break;
-            case GameState.MenuPrincipal:
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                break;
-            case GameState.Gameplay:
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                break;
-        }
+        uiManager = ui;
+        AtualizarUI();
     }
 
-    
-    public void LoadSceneWithState(string sceneName, GameState newState)
+    // -------------------------------------------------------------
+    // GERENCIAMENTO DE MUDANÇA DE CENA
+    // -------------------------------------------------------------
+    public void LoadSceneWithState(string sceneName, GameState state)
     {
-        ChangeState(newState);
-
-       
-        if (newState == GameState.Gameplay)
-        {
-            StartCoroutine(LoadGameplayWithGUI(sceneName));
-        }
-        else
-        {
-            SceneManager.LoadScene(sceneName);
-        }
+        RequestSceneChange(sceneName);
     }
 
-    
-    private IEnumerator LoadGameplayWithGUI(string gameplayScene)
+    public void RequestSceneChange(string nomeDaCena)
     {
-       
-        AsyncOperation loadGameplay = SceneManager.LoadSceneAsync(gameplayScene, LoadSceneMode.Single);
-        
-       
-        while (!loadGameplay.isDone)
+        StartCoroutine(CarregarCenasProcesso(nomeDaCena));
+    }
+
+    private IEnumerator CarregarCenasProcesso(string nomeDaCena)
+    {
+        p1Score = 0;
+        p2Score = 0;
+        moedasColetadasTotal = 0;
+        uiManager = null;
+
+        AsyncOperation opGameplay = SceneManager.LoadSceneAsync(nomeDaCena, LoadSceneMode.Single);
+        while (!opGameplay.isDone)
         {
             yield return null;
         }
 
-        
-        if (!SceneManager.GetSceneByName(guiSceneName).isLoaded)
+        if (nomeDaCena == "GetStarted_Scene" || nomeDaCena == "Jogo")
         {
-            AsyncOperation loadGUI = SceneManager.LoadSceneAsync(guiSceneName, LoadSceneMode.Additive);
-            
-      
-            while (!loadGUI.isDone)
+            AsyncOperation opGUI = SceneManager.LoadSceneAsync("GUI", LoadSceneMode.Additive);
+            while (!opGUI.isDone)
             {
                 yield return null;
             }
         }
-        
-        Debug.Log("<color=green>[GameManager]</color> Gameplay e GUI carregadas com sucesso!");
     }
 
- 
-    public void SetupPlayerInput(PlayerInput playerInput)
+    // -------------------------------------------------------------
+    // LÓGICA DE PONTUAÇÃO E PLACAR
+    // -------------------------------------------------------------
+    public void AdicionarPontuacao(int playerIndex)
     {
-        if (playerInput != null)
+        moedasColetadasTotal++;
+
+        if (playerIndex == 0)
         {
-            Debug.Log("Input alocado ao jogador pelo GameManager.");
-            playerInput.enabled = (currentState == GameState.Gameplay);
+            p1Score++;
+        }
+        else if (playerIndex == 1)
+        {
+            p2Score++;
+        }
+
+        AtualizarUI();
+
+        if (moedasColetadasTotal >= totalMoedasNaCena)
+        {
+            ExibirTelaDeVitoria();
         }
     }
 
-    public void QuitGame()
+    public void AtualizarUI()
     {
-        Debug.Log("Saindo do jogo...");
-        Application.Quit();
+        if (uiManager == null) return;
+
+        if (uiManager.p1ScoreText != null)
+            uiManager.p1ScoreText.text = $"PLAYER 1: {p1Score}";
+
+        if (uiManager.p2ScoreText != null)
+            uiManager.p2ScoreText.text = $"PLAYER 2: {p2Score}";
+
+        if (uiManager.totalRemainingText != null)
+            uiManager.totalRemainingText.text = $"RESTANTES: {totalMoedasNaCena - moedasColetadasTotal}";
     }
 
-    public void MudarCena(string menuprincipal)
+    private void ExibirTelaDeVitoria()
     {
-        throw new System.NotImplementedException();
+        if (uiManager == null) return;
+
+        if (uiManager.winPanel != null)
+            uiManager.winPanel.SetActive(true);
+
+        if (uiManager.winText != null)
+        {
+            if (p1Score > p2Score)
+                uiManager.winText.text = "PLAYER 1 VENCEU!";
+            else if (p2Score > p1Score)
+                uiManager.winText.text = "PLAYER 2 VENCEU!";
+            else
+                uiManager.winText.text = "EMPATE!";
+        }
+    }
+
+    // -------------------------------------------------------------
+    // GERENCIAMENTO DE INPUT SEGURO
+    // -------------------------------------------------------------
+    public void AllocatePlayerInput(PlayerInput player)
+    {
+        if (player == null) return;
+
+        // Procura por "Player" no mapa de ações do asset; se não achar, mantém o padrão ativo
+        var actionMap = player.actions.FindActionMap("Player");
+        if (actionMap != null)
+        {
+            player.SwitchCurrentActionMap("Player");
+        }
+        else
+        {
+            player.currentActionMap?.Enable();
+        }
     }
 }

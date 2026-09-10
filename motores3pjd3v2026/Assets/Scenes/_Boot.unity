@@ -145,12 +145,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 633525098}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 251f38eba7556d74ea39c4bb2d3d57f1, type: 3}
+  m_Script: {fileID: 11500000, guid: ab73cdb4cad777246a3b5eeee01e0a25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  splashSceneName: Splash
-  mainMenuSceneName: MenuPrincipal
-  gameplaySceneName: GetStarted_Scene
+  p1Score: 0
+  p2Score: 0
+  totalMoedasNaCena: 10
+  moedasColetadasTotal: 0
 --- !u!4 &633525100
 Transform:
   m_ObjectHideFlags: 0
