@@ -42,7 +42,6 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator Start()
     {
-        // Se estivermos na cena _Boot ao dar Play, faz o redirecionamento automático
         if (SceneManager.GetActiveScene().name == "_Boot")
         {
             if (tempoEsperaBoot > 0)
@@ -54,18 +53,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // -------------------------------------------------------------
-    // REGISTRO DA INTERFACE DA CENA GUI
-    // -------------------------------------------------------------
     public void RegistrarUI(UIManager ui)
     {
         uiManager = ui;
         AtualizarUI();
     }
 
-    // -------------------------------------------------------------
-    // GERENCIAMENTO DE MUDANÇA DE CENA
-    // -------------------------------------------------------------
     public void LoadSceneWithState(string sceneName, GameState state)
     {
         RequestSceneChange(sceneName);
@@ -89,6 +82,7 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
+        // Carrega a interface gráfica (GUI) de forma aditiva apenas nas cenas de gameplay
         if (nomeDaCena == "GetStarted_Scene" || nomeDaCena == "Jogo")
         {
             AsyncOperation opGUI = SceneManager.LoadSceneAsync("GUI", LoadSceneMode.Additive);
@@ -99,9 +93,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // -------------------------------------------------------------
-    // LÓGICA DE PONTUAÇÃO E PLACAR
-    // -------------------------------------------------------------
     public void AdicionarPontuacao(int playerIndex)
     {
         moedasColetadasTotal++;
@@ -155,14 +146,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // -------------------------------------------------------------
-    // GERENCIAMENTO DE INPUT SEGURO
-    // -------------------------------------------------------------
     public void AllocatePlayerInput(PlayerInput player)
     {
         if (player == null) return;
 
-        // Procura por "Player" no mapa de ações do asset; se não achar, mantém o padrão ativo
         var actionMap = player.actions.FindActionMap("Player");
         if (actionMap != null)
         {

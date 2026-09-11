@@ -8,16 +8,14 @@ public class RobotMovement : MonoBehaviour
 
     private void Awake()
     {
-        // Pega o componente StarterAssetsInputs na raiz
         starterInputs = GetComponent<StarterAssetsInputs>();
     }
 
-    // Corrigido para receber InputValue (padrão do Send Messages)
+    // Assinatura com InputValue para compatibilidade com o comportamento 'Send Messages' do PlayerInput
     public void OnMove(InputValue value)
     {
         if (starterInputs != null)
         {
-            // Repassa o movimento para o Starter Assets
             starterInputs.MoveInput(value.Get<Vector2>());
         }
     }

@@ -17,8 +17,7 @@ public class UIManager : MonoBehaviour
         if (winPanel != null)
             winPanel.SetActive(false);
 
-        // Quando a cena GUI é criada aditivamente pelo GameManager,
-        // ela se "apresenta" para ele registrar as referências dos textos.
+     
         if (GameManager.Instance != null)
         {
             GameManager.Instance.RegistrarUI(this);
