@@ -12,12 +12,13 @@ public class RobotMovement : MonoBehaviour
         starterInputs = GetComponent<StarterAssetsInputs>();
     }
 
-    public void OnMove(InputAction.CallbackContext context)
+    // Corrigido para receber InputValue (padrão do Send Messages)
+    public void OnMove(InputValue value)
     {
         if (starterInputs != null)
         {
             // Repassa o movimento para o Starter Assets
-            starterInputs.MoveInput(context.ReadValue<Vector2>());
+            starterInputs.MoveInput(value.Get<Vector2>());
         }
     }
 }
