@@ -35,6 +35,13 @@ public class Pickup : MonoBehaviour
         // Check if the colliding object has the "Player" tag
         if (other.CompareTag("Player"))
         {
+            // Identifica qual player pegou a estrela e envia para o GameManager
+            PlayerMoedaCollector collector = other.GetComponent<PlayerMoedaCollector>();
+            if (collector != null && GameManager.Instance != null)
+            {
+                GameManager.Instance.AdicionarEstrela(collector.playerIndex);
+            }
+
             // Instantiate the particle effect
             if (particleEffectPrefab != null)
             {
@@ -43,7 +50,6 @@ public class Pickup : MonoBehaviour
 
             // Destroy the star
             Destroy(gameObject);
-
         }
     }
 }
