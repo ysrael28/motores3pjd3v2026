@@ -23,18 +23,18 @@ public class GeradorPlayer : MonoBehaviour
     {
         if (inputManager == null || inputManager.playerPrefab == null) return;
 
-        // Instancia e conecta P1 e P2 ao teclado
+        // Instancia os dois jogadores associados ao teclado
         PlayerInput p1 = inputManager.JoinPlayer(
             playerIndex: 0,
             splitScreenIndex: -1,
-            controlScheme: null,
+            controlScheme: "KeyboardWASD",
             pairWithDevice: Keyboard.current
         );
 
         PlayerInput p2 = inputManager.JoinPlayer(
             playerIndex: 1,
             splitScreenIndex: -1,
-            controlScheme: null,
+            controlScheme: "KeyboardArrows",
             pairWithDevice: Keyboard.current
         );
 
@@ -45,42 +45,29 @@ public class GeradorPlayer : MonoBehaviour
     private void ConfigurarJogador(PlayerInput player, int index, string schemeName, Transform spawn, OutputChannels channel)
     {
         if (player == null) return;
-
-        // 1. GARANTIA: Define o index do Player no Collector PRIMEIRO para a UI funcionar
+        
         PlayerMoedaCollector collector = player.GetComponent<PlayerMoedaCollector>();
         if (collector != null)
         {
             collector.playerIndex = index;
-            Debug.Log($"[GeradorPlayer] Jogador {index + 1} configurado com sucesso! (Index: {index})");
         }
-        else
-        {
-            Debug.LogError($"[GeradorPlayer] Script PlayerMoedaCollector NÃO encontrado no Prefab do Player {index + 1}!");
-        }
-
-        // 2. Posiciona no Spawn Point
+        
         if (spawn != null)
         {
             player.transform.position = spawn.position;
             player.transform.rotation = spawn.rotation;
         }
-
-        // 3. Configura esquemas de Input sem travar o código se o nome do mapa for diferente
+        
         try
         {
             player.SwitchCurrentControlScheme(schemeName, Keyboard.current);
-
-            if (player.actions != null && player.actions.FindActionMap("Player") != null)
-            {
-                player.SwitchCurrentActionMap("Player");
-            }
+            player.defaultControlScheme = schemeName;
         }
         catch (System.Exception e)
         {
-            Debug.LogWarning($"[GeradorPlayer] Aviso de Input no Player {index + 1}: {e.Message}");
+            Debug.LogWarning($"[GeradorPlayer] Falha ao aplicar ControlScheme {schemeName}: {e.Message}");
         }
-
-        // 4. Configuração de Câmera (Alvo a 1.5m de altura no peito do robô)
+        
         CinemachineCamera vcam = player.GetComponentInChildren<CinemachineCamera>();
         if (vcam != null)
         {

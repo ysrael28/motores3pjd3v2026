@@ -18,17 +18,17 @@ public class GameManager : MonoBehaviour
     [Header("Estado Atual")]
     public GameState estadoAtual = GameState.Splash;
 
-    [Header("Configuração Inicial (Boot)")]
+    [Header("Configuração Inicial")]
     [SerializeField] private string primeiraCena = "Splash";
     [SerializeField] private float tempoEsperaBoot = 0.5f;
 
-    [Header("Pontuação e Estrelas (Condição de Vitória)")]
+    [Header("Pontuação e Estrelas")]
     public int p1Score = 0;
     public int p2Score = 0;
     public int totalEstrelasNaCena = 0;
     public int estrelasColetadasTotal = 0;
 
-    [Header("Moedas (Apenas Velocidade e Interface)")]
+    [Header("Moedas")]
     public int p1Moedas = 0;
     public int p2Moedas = 0;
 
@@ -77,11 +77,11 @@ public class GameManager : MonoBehaviour
         {
             estadoAtual = GameState.Splash;
         }
-        else if (scene.name == "MenuPrincipal" || scene.name == "Menu")
+        else if (scene.name == "MenuPrincipal")
         {
             estadoAtual = GameState.MenuPrincipal;
         }
-        else if (scene.name == "GetStarted_Scene" || scene.name == "Jogo")
+        else if (scene.name == "GetStarted_Scene")
         {
             estadoAtual = GameState.Gameplay;
             DetectarEstrelasNaCena();
@@ -102,9 +102,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void RegistrarUI(GuiController gui)
+    public void RegistrarUI(GuiController GUI)
     {
-        guiController = gui;
+        guiController = GUI;
         AtualizarUI();
     }
 
@@ -143,8 +143,6 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
-    // Registra a coleta de MOEDAS (Apenas atualiza a UI sem encerrar a partida)
     public void RegistrarMoedaColetada(int playerIndex, int totalMoedasPlayer)
     {
         if (playerIndex == 0) p1Moedas = totalMoedasPlayer;
@@ -152,14 +150,12 @@ public class GameManager : MonoBehaviour
 
         AtualizarUI();
     }
-
-    // Compatibilidade mantida para scripts antigos
+    
     public void AdicionarPontuacao(int playerIndex)
     {
         AdicionarEstrela(playerIndex);
     }
-
-    // Registra a coleta de ESTRELAS (Única contagem que pode declarar vitória)
+    
     public void AdicionarEstrela(int playerIndex)
     {
         estrelasColetadasTotal++;
@@ -186,10 +182,10 @@ public class GameManager : MonoBehaviour
         if (guiController == null) return;
 
         if (guiController.p1ScoreText != null)
-            guiController.p1ScoreText.text = $"P1 Moedas: {p1Moedas}";
+            guiController.p1ScoreText.text = $"Moedas: {p1Moedas}";
 
         if (guiController.p2ScoreText != null)
-            guiController.p2ScoreText.text = $"P2 Moedas: {p2Moedas}";
+            guiController.p2ScoreText.text = $"Moedas:: {p2Moedas}";
     }
 
     private void ExibirTelaDeVitoria()
@@ -199,11 +195,11 @@ public class GameManager : MonoBehaviour
         string mensagemResultado;
 
         if (p1Score > p2Score)
-            mensagemResultado = "PLAYER 1 VENCEU!";
+            mensagemResultado = "VICTORY: jogador 1";
         else if (p2Score > p1Score)
-            mensagemResultado = "PLAYER 2 VENCEU!";
+            mensagemResultado = "VICTORY: jogador 2";
         else
-            mensagemResultado = "EMPATE!";
+            mensagemResultado = "empate";
 
         guiController.MostrarVitoria(mensagemResultado);
     }

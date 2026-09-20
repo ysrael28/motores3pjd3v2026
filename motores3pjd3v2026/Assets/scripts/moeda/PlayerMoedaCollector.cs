@@ -1,14 +1,13 @@
 using UnityEngine;
-using StarterAssets; // Namespace necessário para aceder ao ThirdPersonController
+using StarterAssets;
 
 public class PlayerMoedaCollector : MonoBehaviour
 {
-    // Identificador atribuído pelo GeradorPlayer (0 = P1, 1 = P2)
-    public int playerIndex = 0;
+    public int playerIndex = 0; 
 
     [Header("Aumento de Velocidade")]
-    [SerializeField] private float incrementoVelocidade = 0.5f; // Quanto a velocidade aumenta por moeda
-    [SerializeField] private float velocidadeMaxima = 12.0f;     // Limite para o robô
+    [SerializeField] private float incrementoVelocidade = 0.5f; 
+    [SerializeField] private float velocidadeMaxima = 12.0f;     
 
     private int moedaCount = 0;
     private ThirdPersonController controller;
@@ -18,7 +17,6 @@ public class PlayerMoedaCollector : MonoBehaviour
         controller = GetComponent<ThirdPersonController>();
     }
 
-    // Funciona se a moeda tiver "Is Trigger" marcado no Collider
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Coin"))
@@ -27,7 +25,6 @@ public class PlayerMoedaCollector : MonoBehaviour
         }
     }
 
-    // Funciona se a moeda tiver colisão física normal (Is Trigger desmarcado)
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.gameObject.CompareTag("Coin"))
@@ -40,19 +37,17 @@ public class PlayerMoedaCollector : MonoBehaviour
     {
         moedaCount++;
 
-        // 1. Aumenta a velocidade de movimento
         AumentarVelocidade();
 
-        // 2. Atualiza o contador de moedas na UI através do GameManager
         if (GameManager.Instance != null)
         {
             GameManager.Instance.RegistrarMoedaColetada(playerIndex, moedaCount);
         }
+        else
+        {
+            Debug.LogError("[Collector] ERRO: GameManager.Instance está NULO!");
+        }
 
-        // 3. Notifica o evento do Observer Manager
-        PlayerObserverManager.NotifyMoedaCollected(moedaCount);
-
-        // 4. Destrói o objeto da moeda
         Destroy(moedaObj);
     }
 
